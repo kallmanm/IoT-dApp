@@ -11,18 +11,21 @@ stop_date = "2021-3-31"
 start_time = "00:00:00"
 stop_time = "23:59:59"
 
+
 def mock_float():
-        mf = round(random.uniform(0.00, 2.00), 2)
-        return mf
+    mf = round(random.uniform(0.00, 2.00), 2)
+    return mf
+
 
 def mock_db_output():
     db_output = (random_date(start_date, stop_date, random.random()),
-                    random_time(start_time, stop_time, random.random()),
-                    mock_float(), mock_float(), mock_float(),
-                    mock_float(), mock_float(), mock_float(),
-                    mock_float(), mock_float(), mock_float(),
-                    mock_float())
+                 random_time(start_time, stop_time, random.random()),
+                 mock_float(), mock_float(), mock_float(),
+                 mock_float(), mock_float(), mock_float(),
+                 mock_float(), mock_float(), mock_float(),
+                 mock_float())
     return db_output
+
 
 def str_time_prop(start, end, format, prop):
     """Get a time at a proportion of a range of two formatted times.
@@ -44,8 +47,10 @@ def str_time_prop(start, end, format, prop):
 def random_date(start, end, prop):
     return str_time_prop(start, end, '%Y-%m-%d', prop)
 
+
 def random_time(start, end, prop):
     return str_time_prop(start, end, '%H:%M:%S', prop)
+
 
 def make_many_entries(amount):
     data = []
@@ -53,21 +58,23 @@ def make_many_entries(amount):
         data.append(mock_db_output())
     return data
 
-def transform_data_to_df(data,cols):
+
+def transform_data_to_df(data, cols):
     df = pd.DataFrame(data, columns=cols)
-    df['datetime'] = df['date'] +' '+ df['time']
+    df['datetime'] = df['date'] + ' ' + df['time']
     df = df.drop(['date', 'time'], axis=1)
     df = df.sort_values(by="datetime")
     df = df.set_index('datetime')
     df.columns.name = 'measurements'
     return df
 
+
 ####################################
 # Remove once eth connection works #
 ####################################
 
 
-class Test:
+class App:
     def __init__(self):
         self.root = Tk()
         self.root.title("IoT-dApp")
@@ -89,7 +96,8 @@ class Test:
         self.button2 = Button(self.root, text="Upload Address", command=self.upload_address)
         self.button3 = Button(self.root, text="Fetch Data", command=self.fetch_data)
         self.button4 = Button(self.root, text="Open Graph", command=self.pandas_graph)
-        self.button5 = Button(self.root, text="Exit Program", command=self.root.quit)
+        self.button5 = Button(self.root, text="Download Data", command=self.download_data)
+        self.button6 = Button(self.root, text="Exit Program", command=self.root.quit)
 
         # SETTING ELEMENTS TO GRID
         self.button1.grid(row=0, column=0)
@@ -97,6 +105,7 @@ class Test:
         self.button3.grid(row=2, column=0)
         self.button4.grid(row=3, column=0)
         self.button5.grid(row=4, column=0)
+        self.button6.grid(row=5, column=0)
         self.label1.grid(row=0, column=1)
         self.label2.grid(row=1, column=1)
 
@@ -136,31 +145,39 @@ class Test:
         plt.subplot(311)
         plt.plot(x, y1)
         plt.legend(l1)
-        plt.xticks(np.arange(0, len(x)+1, 5), rotation=rotation)
+        plt.xticks(np.arange(0, len(x) + 1, 5), rotation=rotation)
         plt.title(title1)
 
         plt.subplot(312)
         plt.plot(x, y2)
         plt.legend(l2)
-        plt.xticks(np.arange(0, len(x)+1, 5), rotation=rotation)
+        plt.xticks(np.arange(0, len(x) + 1, 5), rotation=rotation)
         plt.title(title2)
 
         plt.subplot(313)
         plt.bar(x, y3.d10)
         plt.legend(l3)
-        plt.xticks(np.arange(0, len(x)+1, 5), rotation=rotation)
+        plt.xticks(np.arange(0, len(x) + 1, 5), rotation=rotation)
         plt.title(title3)
 
         plt.tight_layout(pad=padding)
         plt.show()
 
     def fetch_data(self):
-        # USE WEB3 py to fetch data
+        # TODO: Make WEB3 py to fetch data and upload from csv for demo purpose.
         test = make_many_entries(30)
         cols = ['date', 'time', 'd1', 'd2', 'd3', 'd4', 'd5', 'd6', 'd7', 'd8', 'd9', 'd10']
         df = transform_data_to_df(test, cols)
+
+        # HOW TO GET PATH FROM VARS
+        # OPEN FILES AND USE DATA TO ACCESS ETH
+        # self.keytext.get()
+        # self.addresstext.get()
         return df
 
+    def download_data(self):
+        # TODO: make pandas. to csv function download
+        return None
 
-app = Test()
 
+app = App()
